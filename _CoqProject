@@ -11,10 +11,8 @@
 -arg -w -arg +deprecated-tacopt-without-locality
 -arg -w -arg +future-coercion-class-field
 -arg -w -arg +unknown-option
-
 # Plugin directory.
 -I _build/install/default/lib
-
 # Specified logical paths for directories (for .v and .vo files).
 -Q fmdeps/coq/user-contrib/Ltac2 Ltac2
 -Q _build/default/fmdeps/coq/user-contrib/Ltac2 Ltac2
@@ -90,3 +88,8 @@
 -Q _build/default/fmdeps/cpp2v/elpi-cpp/cpp/ bedrock.elpi.cpp
 -Q fmdeps/cpp2v/elpi-cpp/tests/ bedrock_tests.elpi.cpp
 -Q _build/default/fmdeps/cpp2v/elpi-cpp/tests/ bedrock_tests.elpi.cpp
+-Q fmdeps/cpp2v-core/elpi-extra/extra/ bedrock.elpi.extra
+-Q _build/default/fmdeps/cpp2v-core/elpi-extra/extra/ bedrock.elpi.extra
+-Q  monad monad
+-Q _build/default/monad monad
+-Q _build/default/fmdeps/aac-tactics/theories AAC_tactics
