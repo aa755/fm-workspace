@@ -117,15 +117,15 @@ pull() {
     fi
 }
 
-# Cloning the configured repositories.
-for repo in ${PUBLIC_REPOS[@]}; do
-    pull "$repo" "${PUBLIC_REPO}"
-done
 
 if [[ "$public_only" = "0" ]]; then
     # Cloning the private repositories
     for repo in ${PRIVATE_REPOS[@]}; do
 	pull "$repo" "${PRIVATE_REPO}"
+    done
+    # Cloning the configured repositories.
+    for repo in ${PUBLIC_REPOS[@]}; do
+	pull "$repo" "${PUBLIC_REPO}"
     done
 fi
 
@@ -162,7 +162,7 @@ else
   # Avoid --set-switch here, it would hide misconfigurations from the $(opam switch show) test
   eval $(opam env --switch="${OPAM_SWITCH_NAME}")
   opam update
-  opam install ${FMDEPS_DIR}/br-fm-deps.opam
+  opam install ${FMDEPS_DIR}/br-fm-deps.opam --yes
 fi
 
 # Check SWI-Prolog version.

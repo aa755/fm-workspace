@@ -10,7 +10,6 @@ AST_FILES := $(patsubst %/dune-gen.sh,%/dune.inc,$(shell find . -name dune-gen.s
 all: ast-prepare
 
 %/dune.inc: FORCE
-	echo $(shell dirname $@)
 	cd `dirname $@`; ./dune-gen.sh
 .PHONY: FORCE
 
