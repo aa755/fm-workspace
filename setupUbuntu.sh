@@ -18,6 +18,8 @@ echo "eval \$(opam env)" >> ~/.bashrc
 eval $(opam env) # without this, opam-installed binaries cannot be found
 chown -R root:root . # needed when running in a debian docker image and this directory was copied to the docker container via docker cp
 ./setupEmacs.sh
+echo "export TERM=xterm-256color" >> ~/.bashrc
+export TERM=xterm-256color
 
 
 echo "export PATH=/usr/lib/llvm-18/bin/:\$PATH" >> ~/.bashrc
@@ -36,7 +38,7 @@ cd monad
 cd monadproofs
 rm -rf asts
 mv ../../asts ./
-dune build tutorials/demoprf.vo tutorials/demo2prf.vo ../../BasicCoqTutorial/ proofs/exec_specs.vo ../../_build/default/fmdeps/coq/dev/shim/coqtop
-export TERM=xterm-256color
-echo "export TERM=xterm-256color" >> ~/.bashrc
 source ~/.bashrc
+export PATH=/usr/lib/llvm-18/bin/:$PATH # why is this needed despite the above?
+dune build ../../_build/default/fmdeps/coq/dev/shim/coqtop
+dune build tutorials/demoprf.vo tutorials/demo2prf.vo ../../BasicCoqTutorial/ proofs/exec_specs.vo

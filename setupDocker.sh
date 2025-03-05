@@ -34,3 +34,5 @@ docker run --name $CNAME -d -ti -w /root -p 8372:22 $IMAGE bash -l
 docker exec $CNAME mkdir /root/fv-workspace
 docker cp -a . $CNAME:/root/fv-workspace/
 docker exec $CNAME bash -c "cd /root/fv-workspace && ./setupUbuntu.sh"
+docker stop $CNAME # seems to be needed for ~/bashrc vars to be visible
+echo "Success. to enter the new container, do docker start $CNAME; docker attach $CNAME"
