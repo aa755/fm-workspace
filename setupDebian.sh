@@ -1,14 +1,13 @@
 #!/bin/bash
-
 set -e
 set +x
 export DEBIAN_FRONTEND=noninteractive
 
 apt update -y
-apt install -y software-properties-common
+apt install -y software-properties-common python3-launchpadlib # needed for the next line
 apt-add-repository -y ppa:swi-prolog/stable
 
-apt install --no-install-recommends -y git emacs opam swi-prolog pkg-config cmake build-essential gzip gpg libcairo2-dev libexpat1-dev libgmp-dev libgtk-3-dev libgtksourceview-3.0-dev zlib1g-dev rsync libstdc++-14-dev
+apt install --no-install-recommends -y git emacs opam swi-prolog pkg-config cmake build-essential gzip gpg libcairo2-dev libexpat1-dev libgmp-dev libgtk-3-dev libgtksourceview-3.0-dev zlib1g-dev rsync libstdc++-12-dev
 
 wget -q https://apt.llvm.org/llvm.sh
 chmod +x llvm.sh
@@ -26,11 +25,15 @@ echo "ulimit -Ss unlimited" >> ~/.bashrc
 ulimit -Ss unlimited
 source ~/.bashrc
 set +e
-./setup-fmdeps.sh # runs into an inconsequential opam error
+./setup-fmdeps.sh -p # runs into an inconsequential opam error
 set -e
+eval $(opam env) # ./setup-fmdeps.sh changes the opam switch
 
 make ast-prepare # generate dune rules for dune to convert demo*.cpp to demo*.v when it needs to
 cd monad
-./updateMonadCoqAsts.sh # eagerly convert execute_block.cpp and execute_transaction.cpp to exb.v and ext.v respectively. TODO: integrate with ast-prepare above
+# to enable the line below, all deps needed to compile monad execution client need to be installed. currently, we use cached ASTs
+#./updateMonadCoqAsts.sh # eagerly convert execute_block.cpp and execute_transaction.cpp to exb.v and ext.v respectively. TODO: integrate with ast-prepare above
 cd monadproofs
-dune build proofs/demoprf.vo proofs/demo2prf.vo ../../BasicCoqTutorial/ proofs/exec_specs.vo
+rm -rf asts
+mv ../../asts ./
+dune build tutorials/demoprf.vo tutorials/demo2prf.vo ../../BasicCoqTutorial/ proofs/exec_specs.vo
