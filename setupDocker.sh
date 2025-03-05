@@ -33,4 +33,4 @@ docker pull $IMAGE
 docker run --name $CNAME -d -ti -w /root -p 8372:22 $IMAGE bash -l
 docker exec $CNAME mkdir /root/fv-workspace
 docker cp -a . $CNAME:/root/fv-workspace/
-docker exec $CNAME bash -c "cd /root/fv-workspace && ./setupDebian.sh"
+docker exec $CNAME bash -c "cd /root/fv-workspace && ./setupUbuntu.sh"

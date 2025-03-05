@@ -90,8 +90,8 @@
 -Q _build/default/fmdeps/cpp2v/elpi-cpp/tests/ bedrock_tests.elpi.cpp
 -Q fmdeps/cpp2v-core/elpi-extra/extra/ bedrock.elpi.extra
 -Q _build/default/fmdeps/cpp2v-core/elpi-extra/extra/ bedrock.elpi.extra
--Q  monad monad
--Q _build/default/monad monad
+-Q  monad/monadproofs monad
+-Q _build/default/monad/monadproofs monad
 -Q _build/default/fmdeps/aac-tactics/theories AAC_tactics
 -Q BasicCoqTutorial LF
 -Q _build/default/BasicCoqTutorial LF
