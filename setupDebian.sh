@@ -1,14 +1,13 @@
 #!/bin/bash
 set -e
-set +x
+set -x
 export DEBIAN_FRONTEND=noninteractive
 
 apt update -y
 apt install -y software-properties-common python3-launchpadlib # needed for the next line
 apt-add-repository -y ppa:swi-prolog/stable
 
-apt install --no-install-recommends -y git emacs opam swi-prolog pkg-config cmake build-essential gzip gpg libcairo2-dev libexpat1-dev libgmp-dev libgtk-3-dev libgtksourceview-3.0-dev zlib1g-dev rsync libstdc++-12-dev
-
+apt install --no-install-recommends -y git emacs opam swi-prolog pkg-config cmake build-essential gzip gpg libcairo2-dev libexpat1-dev libgmp-dev libgtk-3-dev libgtksourceview-3.0-dev zlib1g-dev rsync libstdc++-14-dev
 wget -q https://apt.llvm.org/llvm.sh
 chmod +x llvm.sh
 ./llvm.sh 18 all
@@ -18,6 +17,7 @@ opam init --disable-sandboxing --yes
 echo "eval \$(opam env)" >> ~/.bashrc 
 eval $(opam env) # without this, opam-installed binaries cannot be found
 chown -R root:root . # needed when running in a debian docker image and this directory was copied to the docker container via docker cp
+./setupEmacs.sh
 
 
 echo "export PATH=/usr/lib/llvm-18/bin/:\$PATH" >> ~/.bashrc
@@ -36,4 +36,7 @@ cd monad
 cd monadproofs
 rm -rf asts
 mv ../../asts ./
-dune build tutorials/demoprf.vo tutorials/demo2prf.vo ../../BasicCoqTutorial/ proofs/exec_specs.vo
+dune build tutorials/demoprf.vo tutorials/demo2prf.vo ../../BasicCoqTutorial/ proofs/exec_specs.vo ../../_build/default/fmdeps/coq/dev/shim/coqtop
+export TERM=xterm-256color
+echo "export TERM=xterm-256color" >> ~/.bashrc
+source ~/.bashrc
