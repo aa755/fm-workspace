@@ -35,4 +35,4 @@ docker exec $CNAME mkdir /root/fv-workspace
 docker cp -a . $CNAME:/root/fv-workspace/
 docker exec $CNAME bash -c "cd /root/fv-workspace && ./setupUbuntu.sh"
 docker stop $CNAME # seems to be needed for ~/bashrc vars to be visible
-echo "Success. to enter the new container, do docker start $CNAME; docker attach $CNAME"
+echo "Success. to enter the new container, do docker start $CNAME; docker attach $CNAME. in the container, read /root/fv-workspace/README.md"

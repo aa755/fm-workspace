@@ -40,5 +40,9 @@ rm -rf asts
 mv ../../asts ./
 source ~/.bashrc
 export PATH=/usr/lib/llvm-18/bin/:$PATH # why is this needed despite the above?
-dune build ../../_build/default/fmdeps/coq/dev/shim/coqtop
-dune build tutorials/demoprf.vo tutorials/demo2prf.vo ../../BasicCoqTutorial/ proofs/exec_specs.vo
+# the next 2 lines are needed for proper rendering of unicode math symboles like \le
+echo "export LANG=C.UTF-8" >> ~/.bashrc
+echo "export LC_ALL=C.UTF-8" >> ~/.bashrc
+#coqtop is needed for emacs, coqidetop.opt is needed for vscode. this workspace has a custom (bundled) version of coq.
+dune build ../../_build/default/fmdeps/coq/dev/shim/coqtop ../../_build/default/fmdeps/coq/dev/shim/coqidetop.opt tutorials/demoprf.vo tutorials/demo2prf.vo ../../BasicCoqTutorial/ proofs/exec_specs.vo
+
