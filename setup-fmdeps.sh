@@ -118,15 +118,15 @@ pull() {
     fi
 }
 
+# Cloning the configured repositories.
+for repo in ${PUBLIC_REPOS[@]}; do
+    pull "$repo" "${PUBLIC_REPO}"
+done
 
 if [[ "$public_only" = "0" ]]; then
     # Cloning the private repositories
     for repo in ${PRIVATE_REPOS[@]}; do
         pull "$repo" "${PRIVATE_REPO}"
-    done
-    # Cloning the configured repositories.
-    for repo in ${PUBLIC_REPOS[@]}; do
-	pull "$repo" "${PUBLIC_REPO}"
     done
 fi
 
