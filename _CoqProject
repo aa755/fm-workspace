@@ -88,8 +88,9 @@
 -Q _build/default/fmdeps/cpp2v/elpi-cpp/cpp/ bedrock.elpi.cpp
 -Q fmdeps/cpp2v/elpi-cpp/tests/ bedrock_tests.elpi.cpp
 -Q _build/default/fmdeps/cpp2v/elpi-cpp/tests/ bedrock_tests.elpi.cpp
--Q fmdeps/cpp2v-core/elpi-extra/extra/ bedrock.elpi.extra
--Q _build/default/fmdeps/cpp2v-core/elpi-extra/extra/ bedrock.elpi.extra
+-Q _build/default/fmdeps/stdlib/theories/ Stdlib
+-Q fmdeps/stdlib/theories/ Stdlib
+
 -Q  monad/monadproofs monad
 -Q _build/default/monad/monadproofs monad
 -Q _build/default/fmdeps/aac-tactics/theories AAC_tactics

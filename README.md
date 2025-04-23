@@ -1,27 +1,103 @@
-Basic Coq tutorials from the logical foundations book are in BasicCoqTutorial. 
-They cover the logic of Coq, but not C++ verfication.
-It has 4 chapters, each in a .v file with c1 to c4 as prefix, indicating the order in which the files should be read. 
-```
-~/fv-workspace/BasicCoqTutorial$ls
-LICENSE  c1Basics.v  c2Induction.v  c3Lists.v  c4Poly.v  dune  dune-project
-```
-These files should ideally be read in a live Coq editor as it illustrates how to run live Coq queries and explains the live proof goals.
-Emacs is preconfigured with Coq support for .v files.
-To open a file with live Coq assistance, use `emacs -nw`, e.g. `emacs -nw BasicCoqTutorial/c1Basics.v`
-This runs emacs in console mode in the terminal, matching what was shown in the c++ verification tutorials at Category labs.
-The top of that file has instructions on how to interact with Coq in emacs.
-(It should be possible to install sshd in the container and then run emacs gui over ssh -Y by dropping `-nw`, but the console mode already has all the important features for editing coq files live)
+BlueRock FM Workspace Setup
+===========================
 
-Other files can be similarly opened. Files of interest are demo*.cpp and demo*prf.v:
+To prepare an FM workspace, run the following command, and follow instructions in its output.
+```sh
+./setup-fmdeps.sh
 ```
-~/fv-workspace/monad/monadproofs/tutorials$ls
-atomic_specs.v	demo.cpp  demo2.cpp  demo2prf.v  demo3.cpp  demomisc.v	demoprf.v  dune-gen.sh	ext_flags.sh
-```
-demo.cpp and demo2.cpp are the C++ files use in the 1st and 2nd c++ verification tutorials, respectively.
-demoprf.v and demo2prf.v have their proofs, respectively.
+This will do the following:
+- Create an `fmdeps` folder and clone all the BlueRock FM deps into it.
+- Create an `opam` switch named `br-${FMDEPS_VERSION}` -- here and below,
+  `${FMDEPS_VERSION}` will be the current release number (currently
+  `2025-02-26`).
+- Install all the external dependencies (`ocaml`, `dune`, ...) in the switch.
+- Check that SWI-Prolog is installed, and that the version is supported.
+- Check that Clang is installed, and that the version is supported.
 
-The specifications of execute_block, execute_transaction, BlockState etc. can be fould in exec_specs.v
+
+**Note:** you should be able to run the script again, as it is defensive.
+
+## Opam environment setup
+
+You will **have to** configure your shell to use the tools from the new `opam` switch!
+This configuration is local to a running shell process, so **it must be repeated for each shell**.
+`setup-fmdeps.sh` will list the correct instructions, typically something like `eval $(opam env)`
+or `eval $(opam env --switch="br-${FMDEPS_VERSION}" --set-switch)`; read the script output for the actual command line!
+
+You can configure `opam` to make this automatic, by adding a hook into your
+shell; you will need to run `opam switch br-${FMDEPS_VERSION}` to make our new
+switch the default, and follow instructions at `opam init --reinit`.
+
+## Building fmdeps
+
+After installation and configuring your environment, you can build Coq and cpp2v via the following command:
+
+```sh
+make -C fmdeps/cpp2v ast-prepare
+dune build @fmdeps/coq/install @cpp2v \
+  _build/default/fmdeps/coq/dev/shim/coqtop \
+  _build/default/fmdeps/coq/dev/shim/coqidetop.opt
 ```
-~/fv-workspace/monad/monadproofs/proofs$ls
-evmopsem.v  exec_specs.v  execproofs  libspecs.v  misc.v
+
+You can compile all the FM dependencies by running the
+following command:
+```sh
+dune build @@default
+```
+
+## Editor Setup
+
+As Coq is built as part of the `dune` workspace, a bit of extra setup is
+required.
+
+
+### PG
+
+You additionally need to run emacs with `emacs -l dev/fmdev.el`.
+
+### VSCoq Legacy
+
+Go to "Settings -> Workspace -> coqtop bin path” and use the following path:
+```/path/to/fm-workspace/_build/default/fmdeps/coq/dev/shim```
+
+### VSCoq 2
+
+Build the `vscoqtop` Coq binary via
+```
+dune build fmdeps/vscoq
+```
+
+Go to "Settings -> Workspace -> Vscoq: Path:" and use the following path:
+```
+/path/to/fm-workspace/_build/install/default/bin/vscoqtop
+```
+
+Or alternatively
+```
+dune exec -- vscoqtop
+```
+
+### Coq-LSP
+
+XXX: Currently this does not work well enough. Current instructions for attempts:
+
+Build the `coq-lsp` Coq binary via
+```
+dune build fmdeps/coq-lsp
+```
+
+Go to "Settings -> Workspace -> Coq-lsp: Path" and use the following path:
+
+```
+/path/to/fm-workspace/_build/install/default/bin/coq-lsp
+```
+
+or alternatively,
+```
+"coq-lsp.path": "dune",
+"coq-lsp.args": [
+    "exec",
+    "--",
+    "coq-lsp"
+],
 ```

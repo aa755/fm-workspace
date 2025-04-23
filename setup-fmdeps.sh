@@ -44,22 +44,22 @@ FMDEPS_DIR="${PWD}/fmdeps"
 MIN_OPAM_VERSION="2.2.1"
 
 # Version of the FM dependencies.
-FMDEPS_VERSION="2024-11-01"
+FMDEPS_VERSION="2025-02-26"
 
 # Configured opam repositories. Convention: "<NAME>!<URL>".
 OPAM_REPOS=(
-  "coq-released!https://coq.inria.fr/opam/released"
   "iris-dev!git+https://gitlab.mpi-sws.org/iris/opam.git"
 )
 
 # Selected opam repositories at switch creation.
-OPAM_SELECTED_REPOS="iris-dev,default,coq-released"
+OPAM_SELECTED_REPOS="iris-dev,default"
 
 # Repositories to clone. Convention: "<REPO_PATH>[><PATH>]:<MAIN_BRANCH>".
 PUBLIC_REPOS=(
   "BRiCk>cpp2v-core:master"
   "coq:br-master"
   "stdpp:br-master"
+  "rocq-stdlib>stdlib:br-master"
   "iris:br-master"
   "coq-ext-lib:br-master"
   "coq-equations:br-main"
@@ -73,6 +73,7 @@ PUBLIC_REPOS=(
 # Repositories that are internal
 PRIVATE_REPOS=(
   "auto>cpp2v:master"
+  "fm-docs:main"
 )
 
 # Creating the directory where repos will be cloned.
@@ -87,12 +88,12 @@ pull() {
     local repo="$1"
     local REPO_BASE="$2"
     if [[ $repo == *">"* ]]; then
-	  repo_path=$(echo ${repo} | cut -d':' -f1)
-	  repo_target=$(echo ${repo_path} | cut -d'>' -f2)
-	  repo_path=$(echo ${repo_path} | cut -d'>' -f1)
+          repo_path=$(echo ${repo} | cut -d':' -f1)
+          repo_target=$(echo ${repo_path} | cut -d'>' -f2)
+          repo_path=$(echo ${repo_path} | cut -d'>' -f1)
     else
-	  repo_path=$(echo ${repo} | cut -d':' -f1)
-	  repo_target=$repo_path
+          repo_path=$(echo ${repo} | cut -d':' -f1)
+          repo_target=$repo_path
     fi
 
 
@@ -112,7 +113,7 @@ pull() {
         git remote set-url origin ${repo_url}
         git fetch
         git checkout ${repo_branch}
-        git pull
+        git pull --rebase
         cd -
     fi
 }
@@ -121,7 +122,7 @@ pull() {
 if [[ "$public_only" = "0" ]]; then
     # Cloning the private repositories
     for repo in ${PRIVATE_REPOS[@]}; do
-	pull "$repo" "${PRIVATE_REPO}"
+        pull "$repo" "${PRIVATE_REPO}"
     done
     # Cloning the configured repositories.
     for repo in ${PUBLIC_REPOS[@]}; do
@@ -138,7 +139,7 @@ fi
 # Check opam version.
 OPAM_VERSION=$(opam --version)
 if [[ "${MIN_OPAM_VERSION}" != \
-      "$(echo -e '${OPAM_VERSION}\n2.2.1' | sort -V | head -n1)" ]]; then
+      "$(echo -e "${OPAM_VERSION}\n${MIN_OPAM_VERSION}" | sort -V | head -n1)" ]]; then
   echo "Your version of opam (${OPAM_VERSION}) is too old."
   echo "Version ${MIN_OPAM_VERSION} at least is required."
   echo "See https://opam.ocaml.org/doc/Install.html for upgrade instructions."
@@ -162,7 +163,10 @@ else
   # Avoid --set-switch here, it would hide misconfigurations from the $(opam switch show) test
   eval $(opam env --switch="${OPAM_SWITCH_NAME}")
   opam update
-  opam install ${FMDEPS_DIR}/br-fm-deps.opam --yes
+  opam_file=${FMDEPS_DIR}/fm-ci/fm-deps/br-fm-deps.opam
+  # We skip this step, and assume fm-ci's opam file is up-to-date.
+  # dune build ${opam_file}
+  opam install ${opam_file}
 fi
 
 # Check SWI-Prolog version.
@@ -231,9 +235,14 @@ fi
 
 # Remind to configure opam.
 
+echo "<<< Caveats >>>"
 if [[ ! `opam switch show` = ${OPAM_SWITCH_NAME} ]]; then
   echo
-  echo -e "\033[0;36mCurrent switch is not ${OPAM_SWITCH_NAME}, you need to run:\033[0m"
+  echo -e "\033[0;36mCurrent switch is not ${OPAM_SWITCH_NAME}, you need to run the following in each shell:\033[0m"
   echo -e \
     "  \033[0;1meval \$(opam env --switch=\"${OPAM_SWITCH_NAME}\" --set-switch)\033[0m"
+else
+  echo -e "\033[0;36mYou need to run the following in each shell:\033[0m"
+  echo -e \
+    "  \033[0;1meval \$(opam env)\033[0m"
 fi
