@@ -119,9 +119,9 @@ pull() {
 }
 
 # Cloning the configured repositories.
-for repo in ${PUBLIC_REPOS[@]}; do
-    pull "$repo" "${PUBLIC_REPO}"
-done
+# for repo in ${PUBLIC_REPOS[@]}; do
+#     pull "$repo" "${PUBLIC_REPO}"
+# done
 
 if [[ "$public_only" = "0" ]]; then
     # Cloning the private repositories
@@ -166,7 +166,7 @@ else
   opam_file=${FMDEPS_DIR}/fm-ci/fm-deps/br-fm-deps.opam
   # We skip this step, and assume fm-ci's opam file is up-to-date.
   # dune build ${opam_file}
-  opam install ${opam_file}
+  opam install ${opam_file} --yes
 fi
 
 # Check SWI-Prolog version.
