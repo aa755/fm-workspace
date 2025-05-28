@@ -73,7 +73,7 @@ PUBLIC_REPOS=(
 # Repositories that are internal
 PRIVATE_REPOS=(
   "auto>cpp2v:master"
-  "fm-docs:main"
+#  "fm-docs:main"
 )
 
 # Creating the directory where repos will be cloned.
@@ -118,10 +118,10 @@ pull() {
     fi
 }
 
-# Cloning the configured repositories.
-# for repo in ${PUBLIC_REPOS[@]}; do
-#     pull "$repo" "${PUBLIC_REPO}"
-# done
+#Cloning the configured repositories.
+for repo in ${PUBLIC_REPOS[@]}; do
+    pull "$repo" "${PUBLIC_REPO}"
+done
 
 if [[ "$public_only" = "0" ]]; then
     # Cloning the private repositories
